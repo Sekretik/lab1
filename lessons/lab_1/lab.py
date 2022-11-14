@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-import math, os
+import os
+import matplotlib.pyplot as plt
 
 visiting_table = pd.read_excel('lessons\\lab_1\\Успеваемость групп.xlsx',sheet_name='Посещение', header=None)
 homework_table = pd.read_excel('lessons\\lab_1\\Успеваемость групп.xlsx',sheet_name='ДЗ', header=None,skiprows=3)
@@ -69,18 +70,6 @@ def getTestByStudent():
 
     return test
 
-# def getScore():
-#     score = ''
-
-#     if(results[i] < 50):
-#         score = 'Н/А'
-#     elif(results[i] < 70):
-#         score = '3'
-#     elif(results[i] < 85):
-#         score = '4'
-#     else:
-#         score = '5'
-
 IDs = visiting_table.index
 visiting, max_vis_count = getVisitingByStudent()
 activity = round(getActivitygByStudent())
@@ -98,3 +87,12 @@ table['Оценка'] = np.where(table['Итог'] < 50, 'Н/А',np.where(table[
 print(table)
 
 table.to_parquet('lessons\\lab_1\\table.parquet',engine='fastparquet')
+
+plt.subplot(2,2,1)
+plt.hist(table['Оценка'],bins=['Н/А','3','4','5'])
+plt.subplot(2,2,2)
+plt.hist(table['Итог'],bins=[0,10,20,30,40,50,60,70,80,90,100])
+plt.subplot(2,2,3)
+plt.pie(table['Оценка'].value_counts(),labels=table['Оценка'].value_counts().index)
+
+plt.show()
